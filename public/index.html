@@ -1,0 +1,26 @@
+<DOCTYPE! HTML>
+    <html>
+        <head>
+            <title>RED SHIFT Topic Chat</title>
+            <meta name="description" content="Lightweight websocket based topic chat application
+            featuring Socket.io and Node.js. Built by Nathan Barber, 2017.">
+            <meta name="keywords" content="chat, topics, talk, text, node.js, socket.io, napnode, 
+            communication, info, information, forum, group, team">
+            <script src="https://opensource.keycdn.com/angularjs/1.6.2/angular.min.js "></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-route.js"></script>
+            <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.1/TweenMax.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.1/plugins/CSSPlugin.min.js"></script>
+            <script src="/socket/socket.io.js"></script>
+
+            <script src="app.js"></script>
+            <script src="sockets.js"></script>
+            <link rel="stylesheet" type="text/css" href="/lib/essential.css"></link>
+        </head>
+
+        <body>
+            <div ng-app="redshift">
+                <div ng-view></div>
+            </div>
+        </body>
+    </html>

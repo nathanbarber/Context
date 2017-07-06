@@ -1,0 +1,20 @@
+<div style="position: relative; height: 100vh; width: 100vw">
+    <link rel="stylesheet" type="text/css" href="/views/live.css"></link>
+    <div id="toppy" class="toppy"><span id="rname"></span><span id="rcnt"></span><span id="total"></span></div>
+    <div id="count"></div>
+    <div id="l" class="loader"></div>
+
+    <div class="indie">
+        &nbsp&nbsp>&nbsp&nbsp
+        <div id="flee" class="toss" ng-mousedown="
+        ref('home');">
+            <div class="tosstext">leave</div>
+            <div class="tossjuice"></div>
+        </div>
+        <div id="toss" class="toss">
+            <div class="tosstext">toss</div>
+            <div class="tossjuice"></div>
+        </div>
+        <input id="f" class="field" ng-keypress="keycheck($event)"></input>
+    </div>
+</div>

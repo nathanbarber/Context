@@ -1,0 +1,19 @@
+@font-face {
+    src: url("/lib/above.ttf");
+    font-family: above;
+}
+
+html {
+    font-family: above;
+    background-color: lightgrey;
+    cursor: default;
+    user-select: none;
+    -webkit-user-select: none; /* Chrome/Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none
+}
+
+body {
+    margin: 0;
+    border: none;
+}
