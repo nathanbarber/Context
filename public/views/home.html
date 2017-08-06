@@ -1,16 +1,18 @@
 <div style="position: relative; width: 100vw; overflow-x:hidden">    
     <div style="width: 100%; height: 100vh; position: relative">
         <link rel="stylesheet" type="text/css" href="/views/home.css"></link>
-        <h1 class="massive">
-            Red Shift
-            <span style="font-size: 2vw"><br>Topic chat. Reinvigorated</span>
-        </h1>
-        <div class="enter" ng-keypress="switch($event)">
-            <div class="label">converse</div>
-            <div class="juice"></div>
-            <div class="roomwrapper"><input class="room" id="roominput" value="What Topic?"></input></div>
-            <div class="namewrapper"><input class="name" id="nameinput" value="Pseudonym?"></input></div>
-            <div class="secondjuice"></div>
+        <div class="ui-text-wrapper">
+            <h1 class="massive">
+                Context<br><span style="font-size: 2vw">Topic chat. Reinvigorated</span>
+            </h1>
+            <div class="enter" ng-keypress="switch($event)">
+                <div class="label">converse</div>
+                <div class="juice"></div>
+                <div class="roomwrapper"><input class="room" id="roominput" value="What Topic?"></input></div>
+                <div class="namewrapper"><input class="name" id="nameinput" value="Pseudonym?"></input></div>
+                <div class="secondjuice"></div>
+            </div>
+            <div class="escape-sheet"></div>
         </div>
         <div style="width: 100%; height: 100vh; overflow:hidden; position: relative">
             <video class="video" loop="true" autoplay="true" src="/lib/loop.mp4"></video>

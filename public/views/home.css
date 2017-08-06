@@ -1,13 +1,29 @@
+.ui-text-wrapper {
+    width: 100%; 
+    height: 100%; 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    z-index: 100;
+    text-align: center;
+}
+
 .massive {
     font-size: 10vw;
     width: 100%;
     color: white;
     font-weight: 300;
     text-align: center;
-    position: absolute;
-    top: 50%;
-    margin-top: -25%;
     z-index: 10;
+}
+
+.escape-sheet {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    top: 0;
+    left: 0;
 }
 
 .video {
@@ -20,11 +36,8 @@
 }
 
 .enter {
-    position: absolute;
-    top: 60%;
-    left: 50%;
-    margin-left: -12.5vw;
-    border: white 3px solid;
+    position: relative;
+    border: white 5px solid;
     width: 25vw;
     height: 6vw;
     z-index: 10;
@@ -34,6 +47,8 @@
     text-align: center;
     overflow: hidden;
     cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .label {

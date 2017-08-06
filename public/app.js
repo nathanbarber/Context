@@ -1,6 +1,6 @@
-var app = angular.module("redshift", ["ngRoute"]);
-var room = "Connection Interrupted"
-var activerooms = new Array();
+var app = angular.module("context", ["ngRoute"]);
+var room = "Connection Interrupted";
+var activerooms = [];
 var name;
 
 app.config(function($routeProvider) {
@@ -12,12 +12,12 @@ app.config(function($routeProvider) {
     .when('/live', {
         controller: 'live',
         templateUrl: '/views/live.html'
-    })
+    });
 });
 
 app.run(function() {
     updateActive();
-})
+});
 
 app.controller('home', function($scope, $location) {
     var listen;
@@ -28,22 +28,22 @@ app.controller('home', function($scope, $location) {
     var complete;
     $(".enter").mouseenter(function() {
         if(!triggered) {
-            TweenMax.to($(this).find(".juice"), .2, {top: 0 + "%"});
-            TweenMax.to($(".label"), .2, {color: "red"});
+            TweenMax.to($(this).find(".juice"), 0.2, {top: 0 + "%"});
+            TweenMax.to($(".label"), 0.2, {color: "red"});
         }
-    })  
+    }); 
     $(".enter").mouseleave(function() {
         if(!triggered) {
-            TweenMax.to($(this).find(".juice"), .2, {top: 100 + "%"});
-            TweenMax.to($(".label"), .2, {color: "#d3d3d3"});
+            TweenMax.to($(this).find(".juice"), 0.2, {top: 100 + "%"});
+            TweenMax.to($(".label"), 0.2, {color: "#d3d3d3"});
         }
-    })  
+    });
     $(".enter").mousedown(function() {
         if(parseFloat($('.roomwrapper').css("top")) > 10) {
-            TweenLite.to(".roomwrapper", .2, {top: 0 + "%"});
-            TweenLite.to(".juice", .2, {top: -100 + "%"})
-            TweenLite.to(".label", .2, {top: -100 + "%"})
-            TweenLite.to('.trendPanel', .2, {right: 5+'vw'})
+            TweenLite.to(".roomwrapper", 0.2, {top: 0 + "%"});
+            TweenLite.to(".juice", 0.2, {top: -100 + "%"});
+            TweenLite.to(".label", 0.2, {top: -100 + "%"});
+            TweenLite.to('.trendPanel', 0.2, {right: 5+'vw'});
             updateActive();
             triggered = true;
             stage1 = true;
@@ -55,7 +55,7 @@ app.controller('home', function($scope, $location) {
         if(last) {
             document.getElementById("nameinput").value = "";
         }
-    })
+    });
     $('.enter').keypress(function(e) {
         if(stage1) {
             if(e.which == 13) {
@@ -68,15 +68,15 @@ app.controller('home', function($scope, $location) {
                 complete = true;
             }
         }
-    })
-    $('.video').mousedown(function() {
+    });
+    $('.escape-sheet').mousedown(function() {
         if(triggered) {
-            TweenLite.to(".roomwrapper", .2, {top: 100 + "%"});
-            TweenLite.to(".juice", .2, {top: 100 + "%"})
-            TweenLite.to(".label", .2, {top: 0 + "%", color: "#d3d3d3"})
-            TweenLite.to(".secondjuice", .2, {top: 100+"%"})
-            TweenLite.to(".namewrapper", .2, {top: 100+"%"})
-            TweenLite.to('.trendPanel', .2, {right: -25 + 'vw'})
+            TweenLite.to(".roomwrapper", 0.2, {top: 100 + "%"});
+            TweenLite.to(".juice", 0.2, {top: 100 + "%"});
+            TweenLite.to(".label", 0.2, {top: 0 + "%", color: "#d3d3d3"});
+            TweenLite.to(".secondjuice", 0.2, {top: 100+"%"});
+            TweenLite.to(".namewrapper", 0.2, {top: 100+"%"});
+            TweenLite.to('.trendPanel', 0.2, {right: -25 + 'vw'});
             setTimeout(function() {
                 document.getElementById("roominput").value = "What Topic?";
                 document.getElementById("nameinput").value = "Pseudonym?";
@@ -87,10 +87,10 @@ app.controller('home', function($scope, $location) {
     });
 
     function nameOverlay() {
-        TweenLite.to(".roomwrapper", .2, {top: -100 + "%"})
-        TweenLite.to(".secondjuice", .4, {top: -100+"%"})
-        TweenLite.to(".namewrapper", .2, {top: 0+"%"})
-        TweenLite.to('.trendPanel', .2, {right: -25 + 'vw'})
+        TweenLite.to(".roomwrapper", 0.2, {top: -100 + "%"});
+        TweenLite.to(".secondjuice", 0.4, {top: -100+"%"});
+        TweenLite.to(".namewrapper", 0.2, {top: 0+"%"});
+        TweenLite.to('.trendPanel', 0.2, {right: -25 + 'vw'});
         last = true;
     }
 
@@ -100,7 +100,7 @@ app.controller('home', function($scope, $location) {
                 $location.path("/live");
                 room = document.getElementById("roominput").value;
                 room = room.toLowerCase();
-                name = (document.getElementById("nameinput").value)
+                name = (document.getElementById("nameinput").value);
                 name = name.substring(0,1).toUpperCase() + name.substring(1).toLowerCase();
                 if(name.length > 15) {
                     name = name.substring(0, 15);
@@ -108,7 +108,7 @@ app.controller('home', function($scope, $location) {
                 if(room.length > 15) {
                     room = room.substring(0, 15);
                 }
-                createConnection(room)
+                createConnection(room);
                 //SWITCH PAGES
             }
         }
@@ -122,42 +122,42 @@ app.controller('live', function($scope, $location) {
         if(room != "Connection Interrupted") {
             socket.emit('disc', {data: ""});
         }
-        $location.path('/')
+        $location.path('/');
         setTimeout(function() {
             updateActive();
-        }, 500)
-    }
+        }, 500);
+    };
     $('.toss').mouseenter(function() {
-        TweenLite.to($(this).find(".tossjuice"), .2, {top: 0 + "%", ease: Power4.easeIn})
-        TweenLite.to($(this).find(".tosstext"), .2, {color: "white"});
+        TweenLite.to($(this).find(".tossjuice"), 0.2, {top: 0 + "%", ease: Power4.easeIn});
+        TweenLite.to($(this).find(".tosstext"), 0.2, {color: "white"});
     });
     $('.toss').mouseleave(function() {
-        TweenLite.to($(this).find(".tossjuice"), .2, {top: -100 + "%", ease: Power4.easeOut})
+        TweenLite.to($(this).find(".tossjuice"), 0.2, {top: -100 + "%", ease: Power4.easeOut});
         var t = $(this).find('.tossjuice');
         setTimeout(function() {
-            TweenLite.set(t, {top: 100 + "%"})
+            TweenLite.set(t, {top: 100 + "%"});
         }, 200);
-        TweenLite.to($(this).find(".tosstext"), .2, {color: "red"});
+        TweenLite.to($(this).find(".tosstext"), 0.2, {color: "red"});
     });
     $("#toss").mousedown(function() {
         verseit(document.getElementById("f").value, true, 'green');
-    })
+    });
 
     $scope.keycheck = function($event) {
         if($event.keyCode == 13) {
             verseit(name + ":  " + document.getElementById("f").value, true, 'green');
         }
-    }
-})
+    };
+});
 
 app.controller('menu', function($scope) {
     
-})
+});
 
 function verseit(txt, sec, color) {
     if(txt.replace(/ /g, '') != '' && txt != ''){
         var loader = document.getElementById("l");
-        var verse = document.createElement("div")
+        var verse = document.createElement("div");
         if(color == "red") {
             verse.setAttribute("class", "verse");
         } else if(color == "green") {
@@ -183,7 +183,7 @@ function updateActive() {
     $.get('/activerooms', function(data) {
         $(document).ready(function() {
             document.getElementById('tp').innerHTML = "";
-            activerooms = new Array();
+            activerooms = [];
             if(data.length == 0) {
                 var trend = document.createElement("div");
                 trend.setAttribute("class", "trend");
@@ -200,11 +200,5 @@ function updateActive() {
                 document.getElementById('tp').appendChild(trend);
             }
         });
-    })
-}
-
-
-
-function i_cant_() {
-    console.log("ehh fuck")
+    });
 }
