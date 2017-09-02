@@ -81,7 +81,7 @@ setInterval(function() {
         //console.log(existing[i] + " with users: " + c);
         io.in(existing[i]).emit("roomcount", {count: c});
     }
-}, 300)
+}, 300);
     
 app.get('/activerooms', function(req, res) {
     var finalreturn = new Array();
@@ -108,4 +108,4 @@ app.get('/activerooms', function(req, res) {
         }
     }
     res.send(finalreturn);
-})
+});
