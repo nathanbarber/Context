@@ -1,6 +1,6 @@
 var app = angular.module("context", ["ngRoute"]);
-app.config(function($routeController) {
-    $routeController
+app.config(function($routeProvider) {
+    $routeProvider
     .when('/', {
         templateUrl: 'views/home.html',
         controller: 'home'

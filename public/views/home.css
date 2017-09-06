@@ -1,0 +1,60 @@
+#home {
+    height: 100vh;
+}
+
+video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 0;
+    opacity: 0.8;
+}
+
+#title {
+    color: white;
+    font-family: above;
+    font-size: 90px;
+    position: relative;
+}
+
+#subtitle {
+    color: white;
+    font-family: above;
+    font-size: 25px;
+}
+
+#button {
+    margin-top: 100px;
+    height: 100px;
+    font-size: 40px;
+    color: white;
+    font-family: above;
+    border: 5px solid white;
+    line-height: 100px;
+}
+
+@media screen and (min-width: 991px) {
+    #title {
+        font-size: 120px;
+    }
+    #subtitle {
+        font-size: 30px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    #title {
+        font-size: 16vw;
+    }
+    #subtitle {
+        font-size: 5vw;
+    }
+}
+
+@media screen and (min-aspect-ratio: 16/9) {
+    video {
+        height: initial;
+        width: 100vw;
+    }
+}

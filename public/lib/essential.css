@@ -10,7 +10,9 @@ html {
     user-select: none;
     -webkit-user-select: none; /* Chrome/Safari */        
     -moz-user-select: none; /* Firefox */
-    -ms-user-select: none
+    -ms-user-select: none;
+    /*-webkit-font-smoothing: antialiased !important;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.004);*/
 }
 
 body {
