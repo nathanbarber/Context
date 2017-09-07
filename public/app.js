@@ -39,7 +39,6 @@ app.controller('home', function($scope, $location) {
             TweenMax.to(".slider", 0.3, {top: "-100%"});
             TweenMax.to("#room", 0.3, {top: "0%"});
         }});
-
     };
     $scope.fromRoom = function(event) {
         if(event.keyCode == 13) {
