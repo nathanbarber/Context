@@ -1,14 +1,20 @@
 <link rel="stylesheet" href="views/home.css">
 <div class="container-fluid" id="home">
-    <video src="/lib/loop.mp4" autoplay loop="true"></video>
-    <h1 class="col-sm-12 text-center" id="title">
-        <br><br>
-        Context
-    </h1>
-    <div class="col-sm-12 text-center" id="subtitle">
-        Topic chat, reinvigorated
-    </div>
-    <div class="col-sm-6 col-md-4 offset-sm-3 offset-md-4 text-center" id="button">
-        <div class="label">Converse</div>
+    <div class="row">
+        <video src="/lib/loop.mp4" autoplay loop="true" ng-mousedown="revertButton()"></video>
+        <h1 class="col-sm-12 text-center" id="title">
+            <br>
+            Context
+        </h1>
+        <div class="col-sm-12 text-center" id="subtitle">
+            Topic chat, reinvigorated
+        </div>
+        <div class="col-8 col-sm-6 col-md-4 offset-2 offset-sm-3 offset-md-4 text-center" id="button" 
+        ng-mouseenter="hover()" ng-mouseleave="leave()">
+            <div class="label" ng-mousedown="initial()">Converse</div>
+            <div class="slider"></div>
+            <input id="room" spellcheck="false" placeholder="Room?" ng-keypress="fromRoom($event)"></input>
+            <input id="name" spellcheck="false" placeholder="Pseudonym?" ng-keypress="fromName($event)"></input>
+        </div>
     </div>
 </div>
