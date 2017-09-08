@@ -76,4 +76,10 @@ app.controller('home', function($scope, $location) {
 app.controller('com', function($scope, $location) {
     socket = io.connect();
     socket.emit("choose-room", room);
+    socket.on('confirm', function(data) {
+        $('#room-name').text(data.room);
+        $('#room-count').text(data.user_count);
+        $('#total-count').text(data.total_count);
+        console.log(data.user_count);
+    });     
 });

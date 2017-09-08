@@ -4,7 +4,7 @@ var express = require("express"),
     path = require("path"),
     fav = require("serve-favicon"),
     clientsConnected = 0,
-    port = 8084;
+    port = 8083;
 
 var app = express();
 app.use("/socket", express.static(__dirname + '/node_modules/socket.io-client/dist/'));
@@ -23,6 +23,13 @@ io.on("connection", function(socket) {
     socket.on("choose-room", function(data) {
         socket.join(data);
         console.log(socket.id + " chose room " + data);
+        io.in(data).clients(function(err, userArray) {
+            socket.emit('confirm', {
+                room: data,
+                user_count: userArray.length,
+                total_count: clientsConnected
+            });
+        });
     });
     socket.on("disconnect", function(socket) {
         clientsConnected--;

@@ -23,7 +23,7 @@ function createConnection(room) {
     });
     socket.on("roomcount", function(data) {
         try {
-            document.getElementById("rcnt").innerHTML = data.count;
+            document.getElementById("room-count").innerHTML = data.count;
         } catch(e) {}
     })
 }
