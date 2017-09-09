@@ -102,7 +102,7 @@ body {
     overflow-y: auto;
 }
 
-.verse {
+.message-out {
     font-size: 3vh;
     color: white;
     border-left: indianred .5vw solid;
@@ -110,9 +110,10 @@ body {
     margin-top: 2vh;
     width: 100%;
     font-family: Courier New, Courier, monospace;
+    padding-left: 2vw;
 }
 
-.respond {
+.message-in {
     font-size: 3vh;
     color: white;
     border-left: lightseagreen .5vw solid;
@@ -120,6 +121,7 @@ body {
     margin-top: 2vh;
     width: 100%;
     font-family: Courier New, Courier, monospace;
+    padding-left: 2vw;
 }
 
 @media screen and (max-aspect-ratio: 3/4) {

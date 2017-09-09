@@ -74,12 +74,45 @@ app.controller('home', function($scope, $location) {
 });
 
 app.controller('com', function($scope, $location) {
+    $(document).ready(function() {
+        $(".input-box").focus();
+    });
     socket = io.connect();
     socket.emit("choose-room", room);
-    socket.on('confirm', function(data) {
-        $('#room-name').text(data.room);
-        $('#room-count').text(data.user_count);
-        $('#total-count').text(data.total_count);
-        console.log(data.user_count);
-    });     
+    socket.on("query-count-update", function() {
+        socket.emit("fetch-count-update", room);
+    });
+    socket.on("updated-count", function(data) {
+        $('#room-name').text(room);
+        $('#room-count').text(data.inRoom);
+        $('#total-count').text(data.total);
+    });
+    socket.on("message-in", function(data) {
+        $('.loader').append("<div class='message-in'> " + data.name + ": " + data.message + "</div>");
+        top();
+    });
+    function top() {
+        TweenMax.set(".loader", {scrollTo: parseInt($(".loader").height())});
+    }
+    function send() {
+        var messageBody = $(".input-box").val();
+        if(messageBody.length > 0) {
+            console.log(messageBody);
+            socket.emit("message", {name: name, room: room, message: messageBody});
+            $('.loader').append("<div class='message-out'> " + name + ": " + messageBody + "</div>");
+        }
+        $(".input-box").val('');
+        top();
+    }
+    $scope.sendButton = function() {
+        send();
+    };
+    $scope.sendListener = function(event) {
+        if(event.keyCode == 13) {
+            send();
+        }
+    };
+    $scope.leave = function() {
+        $location.path("/");
+    };
 });
