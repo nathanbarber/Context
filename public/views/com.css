@@ -108,9 +108,10 @@ body {
     border-left: indianred .5vw solid;
     display: block;
     margin-top: 2vh;
-    width: 100%;
+    width: 100vw;
     font-family: Courier New, Courier, monospace;
     padding-left: 2vw;
+    overflow: hidden;
 }
 
 .message-in {

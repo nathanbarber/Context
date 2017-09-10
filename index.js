@@ -35,6 +35,26 @@ io.on("connection", function(socket) {
     socket.on("message", function(data) {
         socket.broadcast.to(data.room).emit("message-in", data);
     }); 
+    socket.on("activity", function(data) {
+        var rooms = [];
+        for(var i in io.sockets.adapter.rooms) {
+            var includes_number = /\d/;
+            if(!(includes_number.test(i))) {
+                rooms.push({
+                    room: i,
+                    clients: (function(room) {
+                        var clients = 0;
+                        for(var j in io.sockets.adapter.rooms[room].sockets) {
+                            clients++;
+                        }
+                        return clients;
+                    })(i)
+                });
+            }
+        }
+        console.log(rooms);
+        socket.emit("activity-response", rooms);
+    });
     socket.on("disconnect", function(socket) {
         clientsConnected--;
         console.log(clientsConnected + " users online");

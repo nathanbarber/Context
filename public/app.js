@@ -39,6 +39,11 @@ app.controller('home', function($scope, $location) {
             TweenMax.to(".slider", 0.3, {top: "-100%"});
             TweenMax.to("#room", 0.3, {top: "0%"});
         }});
+        socket = io.connect();
+        socket.emit("activity");
+        socket.on("activity-response", function(data) {
+            console.log(data);
+        });
     };
     $scope.fromRoom = function(event) {
         if(event.keyCode == 13) {
@@ -70,14 +75,26 @@ app.controller('home', function($scope, $location) {
             TweenMax.to(".label", 0.3, {top: 0, color: "white"});
             $("#button input").val('');
         }});
+        if(socket) {
+            socket.disconnect();
+        }
+        socket = undefined;
     };
 });
 
 app.controller('com', function($scope, $location) {
+    if(room == '' || name == '') {
+        if(socket) {
+            socket.disconnect();
+        }
+        $location.path("/");
+    }
     $(document).ready(function() {
         $(".input-box").focus();
     });
-    socket = io.connect();
+    if(socket == undefined) {
+        socket = io.connect();
+    }
     socket.emit("choose-room", room);
     socket.on("query-count-update", function() {
         socket.emit("fetch-count-update", room);
