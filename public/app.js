@@ -42,12 +42,19 @@ app.controller('home', function($scope, $location) {
         socket = io.connect();
         socket.emit("activity");
         socket.on("activity-response", function(data) {
-            console.log(data);
+            $("#activity").find(".pair").remove();
+            for(var i in data) {
+                $("#activity").append("<div class='pair'><span class='room'>" + 
+                    data[i].room + ": </span><span class='count'>" + 
+                    data[i].clients + "</span></div>");
+                TweenMax.to("#activity", 0.3, {opacity: 1, marginTop: "20px"});
+            }
         });
     };
     $scope.fromRoom = function(event) {
         if(event.keyCode == 13) {
-            if($("#room").val() != '') {
+            if($("#room").val() != '' && $("#room").val().length < 15) {
+                $("#room").blur();
                 $scope.room = $("#room").val().toUpperCase();
                 room = $scope.room;
                 TweenMax.to("#room", 0.3, {top: "-100%"});
@@ -57,6 +64,12 @@ app.controller('home', function($scope, $location) {
                         $("#name").focus();
                     }});
                 }});
+                TweenMax.to("#activity", 0.3, {opacity: 0, marginTop: "120px"});
+            } else {
+                TweenLite.to("#button", 0.15, {borderColor: "red", onComplete: function() {
+                    TweenLite.to("#button", 0.15, {borderColor: "white"});
+                }});
+                $("#room").val("");
             }
         }
     };
@@ -75,6 +88,7 @@ app.controller('home', function($scope, $location) {
             TweenMax.to(".label", 0.3, {top: 0, color: "white"});
             $("#button input").val('');
         }});
+        TweenMax.to("#activity", 0.3, {opacity: 0, marginTop: "120px"});
         if(socket) {
             socket.disconnect();
         }
@@ -111,6 +125,16 @@ app.controller('com', function($scope, $location) {
     function top() {
         TweenMax.set(".loader", {scrollTo: parseInt($(".loader").height())});
     }
+    function hideKeyboard(element) {
+        element.attr('readonly', 'readonly'); // Force keyboard to hide on input field.
+        element.attr('disabled', 'true'); // Force keyboard to hide on textarea field.
+        setTimeout(function() {
+            element.blur();  //actually close the keyboard
+            // Remove readonly attribute after keyboard is hidden.
+            element.removeAttr('readonly');
+            element.removeAttr('disabled');
+        }, 100);
+    }
     function send() {
         var messageBody = $(".input-box").val();
         if(messageBody.length > 0) {
@@ -120,6 +144,8 @@ app.controller('com', function($scope, $location) {
         }
         $(".input-box").val('');
         top();
+        hideKeyboard(document.getElementById("#input-box"));
+        $(".input-box").blur();        
     }
     $scope.sendButton = function() {
         send();

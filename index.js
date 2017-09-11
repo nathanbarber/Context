@@ -38,8 +38,7 @@ io.on("connection", function(socket) {
     socket.on("activity", function(data) {
         var rooms = [];
         for(var i in io.sockets.adapter.rooms) {
-            var includes_number = /\d/;
-            if(!(includes_number.test(i))) {
+            if(i.length < 15) {
                 rooms.push({
                     room: i,
                     clients: (function(room) {
@@ -52,7 +51,14 @@ io.on("connection", function(socket) {
                 });
             }
         }
-        console.log(rooms);
+        function compare(a,b) {
+            if (a.clients < b.clients)
+                return 1;
+            if (a.clients > b.clients)
+                return -1;
+            return 0;
+        }
+        rooms.sort(compare);
         socket.emit("activity-response", rooms);
     });
     socket.on("disconnect", function(socket) {
