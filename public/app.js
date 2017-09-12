@@ -73,7 +73,8 @@ app.controller('home', function($scope, $location) {
             }
         }
     };
-    $scope.fromName = function() {
+    $scope.fromName = function(event) {
+        console.log("fromname");
         if(event.keyCode == 13) {
             if($("#name").val() != '') {
                 $scope.name = $("#name").val();
@@ -123,14 +124,14 @@ app.controller('com', function($scope, $location) {
         top();
     });
     function top() {
-        TweenMax.set(".loader", {scrollTo: parseInt($(".loader").height())});
+        var loader = document.getElementById("loader");
+        loader.scrollTop = loader.scrollHeight;
     }
     function hideKeyboard(element) {
-        element.attr('readonly', 'readonly'); // Force keyboard to hide on input field.
-        element.attr('disabled', 'true'); // Force keyboard to hide on textarea field.
+        element.attr('readonly', 'readonly');
+        element.attr('disabled', 'true');
         setTimeout(function() {
-            element.blur();  //actually close the keyboard
-            // Remove readonly attribute after keyboard is hidden.
+            element.blur();
             element.removeAttr('readonly');
             element.removeAttr('disabled');
         }, 100);
