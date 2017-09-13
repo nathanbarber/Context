@@ -114,6 +114,7 @@ body {
     top: 15vh;
     height: 60vh;
     overflow: hidden;
+    width: 100%;
 }
 
 .loader {

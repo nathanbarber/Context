@@ -74,7 +74,6 @@ app.controller('home', function($scope, $location) {
         }
     };
     $scope.fromName = function(event) {
-        console.log("fromname");
         if(event.keyCode == 13) {
             if($("#name").val() != '') {
                 $scope.name = $("#name").val();
@@ -114,6 +113,21 @@ app.controller('com', function($scope, $location) {
     socket.on("query-count-update", function() {
         socket.emit("fetch-count-update", room);
     });
+    socket.on("room-log", function(data) {
+        if(data) {
+            console.log(data);
+            for(var i in data) {
+                if(data[i].split(":")[0] == name) {
+                    $('#loader').append("<div class='message-out'> " + data[i] + "</div>");
+                } else {
+                    $('#loader').append("<div class='message-in'> " + data[i] + "</div>");
+                }
+            }
+            top();
+        } else {
+
+        }
+    });
     socket.on("updated-count", function(data) {
         $('#room-name').text(room);
         $('#room-count').text(data.inRoom);
@@ -126,15 +140,7 @@ app.controller('com', function($scope, $location) {
     function top() {
         var loader = document.getElementById("loader");
         loader.scrollTop = loader.scrollHeight;
-    }
-    function hideKeyboard(element) {
-        element.attr('readonly', 'readonly');
-        element.attr('disabled', 'true');
-        setTimeout(function() {
-            element.blur();
-            element.removeAttr('readonly');
-            element.removeAttr('disabled');
-        }, 100);
+        console.log("top run");
     }
     function send() {
         var messageBody = $(".input-box").val();
@@ -145,8 +151,7 @@ app.controller('com', function($scope, $location) {
         }
         $(".input-box").val('');
         top();
-        hideKeyboard(document.getElementById("#input-box"));
-        $(".input-box").blur();        
+        $(".input-box").focus();        
     }
     $scope.sendButton = function() {
         send();

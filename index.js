@@ -1,6 +1,7 @@
 var express = require("express"),
     http = require("http"),
     socketio = require("socket.io"),
+    node_redis = require("redis"),
     path = require("path"),
     fav = require("serve-favicon"),
     clientsConnected = 0,
@@ -16,13 +17,19 @@ var io = socketio(server);
 server.listen(port, function() {
     console.log("\t CONTEXT running on port " + port);
 });
+var redis = node_redis.createClient();
+redis.flushdb();
 io.on("connection", function(socket) {
     clientsConnected++;
     console.log(clientsConnected + " users online");
     socket.on("choose-room", function(data) {
         socket.join(data);
-        //console.log(socket.id + " chose room " + data);
         io.emit("query-count-update");
+        redis.lrange(data, 0, -1, function(err, res) {
+            if(res) {
+                socket.emit("room-log", res);
+            }
+        });
     });
     socket.on("fetch-count-update", function(room) {
         io.in(room).clients(function(err, userArray) {
@@ -34,6 +41,10 @@ io.on("connection", function(socket) {
     });
     socket.on("message", function(data) {
         socket.broadcast.to(data.room).emit("message-in", data);
+        redis.rpush(data.room, data.name + ": " + data.message, function(err, res) {
+            if(err)
+                console.log(err);
+        });
     }); 
     socket.on("activity", function(data) {
         var rooms = [];
@@ -65,5 +76,20 @@ io.on("connection", function(socket) {
         clientsConnected--;
         console.log(clientsConnected + " users online");
         io.emit("query-count-update");
+        var rooms = [];
+        for(var i in io.sockets.adapter.rooms) {
+            if(i.length < 20) {
+                rooms.push(i);
+            }
+        }
+        redis.keys("*", function(err, res) {
+            for(var i in res) {
+                if(rooms.includes(res[i])) {
+                    continue;
+                } else {
+                    redis.del(res[i]);
+                }
+            }
+        });
     });
 });

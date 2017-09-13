@@ -6,7 +6,7 @@ IDEAS:
 
     Make home page animation GIF based as to display properly on mobile
 
-    Make chat persistant as long as room is open
+    Make chat persistant as long as room is open. Use Redis with redis-node-client
 
 BUGS:
 
