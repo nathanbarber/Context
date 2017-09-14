@@ -5,7 +5,7 @@ var express = require("express"),
     path = require("path"),
     fav = require("serve-favicon"),
     clientsConnected = 0,
-    port = 8083;
+    port = 8084;
 
 var app = express();
 app.use("/socket", express.static(__dirname + '/node_modules/socket.io-client/dist/'));

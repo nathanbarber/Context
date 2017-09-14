@@ -3,9 +3,26 @@
     font-family: above;
 }
 
+@font-face {
+    src: url("/lib/dr.otf");
+    font-family: dialog;
+}
+
+@font-face {
+    src: url("/lib/dl.otf");
+    font-family: dialog;
+    font-weight: lighter;
+}
+
+@font-face {
+    src: url("/lib/dl.otf");
+    font-family: dialog;
+    font-weight: bold;
+}
+
 html {
-    font-family: above;
-    background-color: lightgrey;
+    font-family: dialog;
+    background-color: #efefef;
     cursor: default;
     user-select: none;
     -webkit-user-select: none; /* Chrome/Safari */        

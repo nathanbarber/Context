@@ -19,6 +19,7 @@ app.controller('home', function($scope, $location) {
     if(socket) {
         socket.disconnect();
     }
+    fadeInDelay($("#home-local"), $(".local-block"));
     $scope.hover = function() {
         if($(".label").css("top") == "0px") {
             TweenMax.to(".slider", 0.3, {top: "0%"});
