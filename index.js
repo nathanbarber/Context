@@ -72,6 +72,30 @@ io.on("connection", function(socket) {
         rooms.sort(compare);
         socket.emit("activity-response", rooms);
     });
+
+    // Local - postable
+
+    socket.on("create-postable", function(data) {
+        if(data.location) {
+            redis.lpush(data.name + "-" + data.location);
+        }
+    });
+    socket.on("request-post-to", function(data) {
+        redis.keys("*-" + data.location, function(err, res) {
+            for(var i in res) {
+                if(res[i] == data.name) {
+                    socket.posting = data.name;
+                    console.log(socket.posting);
+                }
+            }
+        });
+    });
+    socket.on("post-to", function(data) {
+        redis.lpush(socket.posting, data.post);
+    });
+
+    // End
+
     socket.on("disconnect", function(socket) {
         clientsConnected--;
         console.log(clientsConnected + " users online");

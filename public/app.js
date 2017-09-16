@@ -18,8 +18,8 @@ var socket;
 app.controller('home', function($scope, $location) {
     if(socket) {
         socket.disconnect();
+        socket = io.connect();
     }
-    fadeInDelay($("#home-local"), $(".local-block"));
     $scope.hover = function() {
         if($(".label").css("top") == "0px") {
             TweenMax.to(".slider", 0.3, {top: "0%"});
@@ -40,7 +40,6 @@ app.controller('home', function($scope, $location) {
             TweenMax.to(".slider", 0.3, {top: "-100%"});
             TweenMax.to("#room", 0.3, {top: "0%"});
         }});
-        socket = io.connect();
         socket.emit("activity");
         socket.on("activity-response", function(data) {
             $("#activity").find(".pair").remove();
@@ -94,6 +93,29 @@ app.controller('home', function($scope, $location) {
             socket.disconnect();
         }
         socket = undefined;
+    };
+    $scope.newPostable = function() {
+        TweenLite.to(".plus", 0.3, {opacity: 0, onComplete: function() {
+            TweenLite.set(".plus", {display: "none"});
+            TweenLite.to(".newPostable", 0.3, {top: 0});
+        }});
+        $(window).click(function() {
+            TweenLite.set(".plus", {display: "initial"});
+            TweenLite.to(".newPostable", 0.3, {top: "100%", onComplete: function() {
+                TweenLite.to(".plus", 0.3, {opacity: 1});
+            }}); 
+            $(".newPostable").find("input").value("");
+        });
+        $('.local-spawn').click(function(event) {
+            event.stopPropagation();
+        });
+    };  
+    $scope.submitPostable = function() {
+        var postable = {
+            name: $(".newPostable").find("input").value(),
+            location: undefined
+        };
+        socket.emit("create-postable", postable);
     };
 });
 
