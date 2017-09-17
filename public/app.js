@@ -14,16 +14,36 @@ app.config(function($routeProvider) {
 var room = '';
 var name = '';
 var socket;
+var userLocation;
 
 app.controller('home', function($scope, $location) {
     if(socket) {
         socket.disconnect();
         socket = io.connect();
+    } else {
+        socket = io.connect();
     }
+    $(document).ready(function() {
+        if(isMobile() == false) {
+            $(".background").css({
+                position: "fixed"
+            });
+            $(".local-block, .local-spawn").addClass("padding-expand");
+            $(".post, .block").addClass("shadow-expand");
+        }
+        $(".background").css({
+            background: "red url('lib/" + (Math.floor(Math.random() * 8) + 1) + ".gif') no-repeat center",
+            backgroundSize: "cover"
+        });
+    });
     $scope.hover = function() {
-        if($(".label").css("top") == "0px") {
-            TweenMax.to(".slider", 0.3, {top: "0%"});
-            TweenMax.to(".label", 0.3, {color: "red"});
+        if(isMobile()) {
+            $scope.initial();
+        } else {
+            if($(".label").css("top") == "0px") {
+                TweenMax.to(".slider", 0.3, {top: "0%"});
+                TweenMax.to(".label", 0.3, {color: "#dd8888"});
+            }
         }
     };
     $scope.leave = function() {
@@ -33,12 +53,13 @@ app.controller('home', function($scope, $location) {
         }
     };
     $scope.initial = function() {
-        console.log("initial");
         TweenMax.to(".label", 0.3, {top: "-100%"});
         TweenMax.to(".slider", 0.3, {top: "-100%", onComplete: function() {
             TweenMax.set(".slider", {top: "100%"});
             TweenMax.to(".slider", 0.3, {top: "-100%"});
-            TweenMax.to("#room", 0.3, {top: "0%"});
+            TweenMax.to("#room", 0.3, {top: "0%", onComplete: function() {
+                $("#room").focus();
+            }});
         }});
         socket.emit("activity");
         socket.on("activity-response", function(data) {
@@ -89,10 +110,27 @@ app.controller('home', function($scope, $location) {
             $("#button input").val('');
         }});
         TweenMax.to("#activity", 0.3, {opacity: 0, marginTop: "120px"});
-        if(socket) {
-            socket.disconnect();
+    };
+    $scope.locationListener = function(event) {
+        if(event.keyCode == 13) {
+            var zip = $("#zip").val();
+            if(/[0-9]/g.test(zip) == true && zip.length == 5) {
+                userLocation = zip;
+                $("#header-text").text("Nearby");
+                $("#zip").css("display", "none");
+                $(".local-spawn").css("display", "initial");
+                socket.emit("get-posts", userLocation);
+                socket.on("local-posts", function(data) {
+                    console.log(data);
+                    $(".local-block").remove();
+                    for(var i in data) {
+                        $(".local-topics").append("<div class='local-block col-12 col-sm-6 col-md-4'><div class='block'><div class='block-topic'>" + data[i].replace(/\d/g, '').replace(/\-/g, ' ') + "</div></div></div>");
+                    }
+                });
+            } else {
+                $("#zip").val("");
+            }
         }
-        socket = undefined;
     };
     $scope.newPostable = function() {
         TweenLite.to(".plus", 0.3, {opacity: 0, onComplete: function() {
@@ -104,7 +142,7 @@ app.controller('home', function($scope, $location) {
             TweenLite.to(".newPostable", 0.3, {top: "100%", onComplete: function() {
                 TweenLite.to(".plus", 0.3, {opacity: 1});
             }}); 
-            $(".newPostable").find("input").value("");
+            $(".newPostable").find("input").val("");
         });
         $('.local-spawn').click(function(event) {
             event.stopPropagation();
@@ -112,10 +150,15 @@ app.controller('home', function($scope, $location) {
     };  
     $scope.submitPostable = function() {
         var postable = {
-            name: $(".newPostable").find("input").value(),
-            location: undefined
+            name: $(".newPostable").find("#topic").val(),
+            location: userLocation
         };
-        socket.emit("create-postable", postable);
+        if(postable.name.length > 3 && postable.name.replace(" ", '').length > 3) {
+            socket.emit("create-postable", postable);
+            socket.emit("get-posts", userLocation);
+        } else {
+            alert("Revise your posting");
+        }
     };
 });
 
@@ -138,7 +181,6 @@ app.controller('com', function($scope, $location) {
     });
     socket.on("room-log", function(data) {
         if(data) {
-            console.log(data);
             for(var i in data) {
                 if(data[i].split(":")[0] == name) {
                     $('#loader').append("<div class='message-out'> " + data[i] + "</div>");
@@ -163,12 +205,10 @@ app.controller('com', function($scope, $location) {
     function top() {
         var loader = document.getElementById("loader");
         loader.scrollTop = loader.scrollHeight;
-        console.log("top run");
     }
     function send() {
         var messageBody = $(".input-box").val();
         if(messageBody.length > 0) {
-            console.log(messageBody);
             socket.emit("message", {name: name, room: room, message: messageBody});
             $('.loader').append("<div class='message-out'> " + name + ": " + messageBody + "</div>");
         }
@@ -188,3 +228,12 @@ app.controller('com', function($scope, $location) {
         $location.path("/");
     };
 });
+
+// Standard Functions
+
+function isMobile() {
+    if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+        return true;
+    }
+    return false;
+}

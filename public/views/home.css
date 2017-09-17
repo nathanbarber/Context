@@ -5,13 +5,25 @@
     background-color: red;
 }
 
-video {
+/* video {
     position: absolute;
     top: 0;
     left: 0;
     height: 100vh;
     z-index: 0;
     opacity: 0.7;
+} */
+
+.background {
+    position: absolute;
+    top: -1vh;
+    left: -1vw;
+    height: 102vh;
+    width: 102vw;
+    z-index: 0;
+    opacity: 0.7;
+    background-color: red;
+    filter: blur(2px);
 }
 
 #title {
@@ -52,6 +64,7 @@ video {
     border: none;
     outline: none;
     border-radius: 0px;
+    line-height: calc(100%);
 }
 
 #button .slider {
@@ -105,11 +118,29 @@ video {
 }
 
 #header {
-    font-size: 5vw;
-    text-align: center;
+    text-align: left;
     font-family: dialog;
-    color: #dd8888;
+    color: #545454;
     margin-bottom: 5vh;
+    position: relative;
+}
+
+#header-text {
+    border-left: 20px solid #545454;
+    padding-left: 30px;
+    font-size: 80px;
+    display: inline-block;
+}
+
+#header #zip {
+    padding-left: 30px;
+    font-size: 60px;
+    font-family: dialog;
+    border: none;
+    outline: none;
+    display: inline-block;
+    width: 30%;
+    background-color: transparent;
 }
 
 .local-spawn {
@@ -118,10 +149,7 @@ video {
     transition: padding 300ms ease-in 0s;
     -webkit-transition: padding 300ms ease-in 0s;
     -moz-transition: padding 300ms ease-in 0s;
-}
-
-.local-spawn:hover {
-    padding: 15px;
+    display: none;
 }
 
 .plus {
@@ -129,7 +157,7 @@ video {
     height: 100%;
     position: absolute;
     top: 0; left: 0;
-    line-height: 260px;
+    line-height: 240px;
     font-family: dialog;
     color: #dd8888;
     font-size: 120px;
@@ -142,6 +170,7 @@ video {
     height: 100%;
     background-color: rgb(203, 203, 203);
     text-align: center;
+    padding-top: 20px;
 }
 
 .newPostable input {
@@ -152,7 +181,6 @@ video {
     color: #878787;
     border: none;
     border-bottom: 4px solid #878787;
-    /* background-color: rgb(223, 223, 223); */
     background-color: transparent;
     border-radius: 3px;
     outline: none;
@@ -174,19 +202,14 @@ video {
 }
 
 .newPostable .post:hover {
-    background-color: #575757
+    background-color: #656565;
 }
-
 .local-block {
     height: 300px;
     padding: 20px;
     -webkit-transition: padding 300ms ease-in 0s;
     -moz-transition: padding 300ms ease-in 0s;
     transition: padding 300ms ease-in 0s;
-}
-
-.local-block:hover {
-    padding: 15px;
 }
 
 .block {
@@ -200,10 +223,25 @@ video {
     -webkit-transition: box-shadow 300ms, background-color 300ms ease-in 0s;
     -moz-transition: box-shadow 300ms, background-color 300ms ease-in 0s;
     transition: box-shadow 300ms, background-color 300ms ease-in 0s;
+    padding: 20px;
 }
 
-.block:hover {
+.block-topic {
+    border-left: #767676 5px solid;
+    text-align: left;
+    font-size: 30px;
+    padding-left: 20px;
+    font-family: dialog;
+    color: #989898;
+    height: 100%;
+}
+
+.shadow-expand:hover {
     box-shadow: 7px 7px 10px #cfcfcf;
+}
+
+.padding-expand:hover {
+    padding: 15px;
 }
 
 @media screen and (min-width: 991px) {
@@ -223,7 +261,6 @@ video {
     #activity {
         font-size: 30px;
     }
-
     /* Local */
 }
 
@@ -247,7 +284,21 @@ video {
     #activity {
         font-size: 20px;
     }
-
+    #header-text {
+        font-size: 40px;
+        border-left: 12px solid #545454;
+        padding-left: 30px;
+    }
+    #header #zip {
+        font-size: 40px;
+        display: block;
+        width: initial;
+        border-left: 12px solid transparent;
+        padding-left: 30px;
+    }
+    .newPostable input {
+        width: 90%;
+    }
     /* Local */
 }
 

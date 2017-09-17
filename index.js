@@ -76,18 +76,11 @@ io.on("connection", function(socket) {
     // Local - postable
 
     socket.on("create-postable", function(data) {
-        if(data.location) {
-            redis.lpush(data.name + "-" + data.location);
-        }
+        redis.lpush(data.name + "-" + data.location, "New Topic: " + data.name);
     });
-    socket.on("request-post-to", function(data) {
-        redis.keys("*-" + data.location, function(err, res) {
-            for(var i in res) {
-                if(res[i] == data.name) {
-                    socket.posting = data.name;
-                    console.log(socket.posting);
-                }
-            }
+    socket.on("get-posts", function(data) {
+        redis.keys("*-" + data.substring(0,3) + "??", function(err, res) {
+            socket.emit("local-posts", res);
         });
     });
     socket.on("post-to", function(data) {
