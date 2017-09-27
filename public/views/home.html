@@ -1,27 +1,42 @@
-<div style="position: relative; width: 100vw; overflow-x:hidden">    
-    <div style="width: 100%; height: 100vh; position: relative">
-        <link rel="stylesheet" type="text/css" href="/views/home.css"></link>
-        <div class="ui-text-wrapper">
-            <h1 class="massive">
-                Context<br><span style="font-size: 2vw">Topic chat. Reinvigorated</span>
-            </h1>
-            <div class="enter" ng-keypress="switch($event)">
-                <div class="label">converse</div>
-                <div class="juice"></div>
-                <div class="roomwrapper"><input class="room" id="roominput" value="What Topic?"></input></div>
-                <div class="namewrapper"><input class="name" id="nameinput" value="Pseudonym?"></input></div>
-                <div class="secondjuice"></div>
-            </div>
-            <div class="escape-sheet"></div>
+<link rel="stylesheet" href="views/home.css">
+<div class="container-fluid" id="home-global">
+    <div class="row">
+        <!-- <video src="/lib/loop.mp4" autoplay loop="true" ng-mousedown="revertButton()"></video> -->
+        <div class="background" ng-mousedown="revertButton()"></div>
+        <h1 class="col-sm-12 text-center" id="title">
+            <br>
+            Context
+        </h1>
+        <div class="col-sm-12 text-center" id="subtitle">
+            Topic chat, reinvigorated
         </div>
-        <div style="width: 100%; height: 100vh; overflow:hidden; position: relative">
-            <video class="video" loop="true" autoplay="true" src="/lib/loop.mp4"></video>
+        <div class="col-8 col-sm-6 col-md-4 offset-2 offset-sm-3 offset-md-4 text-center" id="button" 
+        ng-mouseenter="hover()" ng-mouseleave="leave()">
+            <div class="label" ng-mousedown="initial()">Converse</div>
+            <div class="slider"></div>
+            <input id="room" spellcheck="false" placeholder="Room?" ng-keypress="fromRoom($event)"></input>
+            <input id="name" spellcheck="false" placeholder="Pseudonym?" ng-keypress="fromName($event)"></input>
+        </div>
+        <div class="col-8 col-sm-6 col-md-4 offset-2 offset-sm-3 offset-md-4 text-left" id="activity">
+            
         </div>
     </div>
-    <div class="trendPanel">
-        <div class="trend" id="trendbig">Active Topics</div>
-        <div id="tp">
-
-        <div>
+</div>
+<div class="container-fluid text-center" id="home-local">
+    <div class="row local-topics">
+        <div id="header" class="col-12 col-sm-10 offset-sm-2">
+            <div id="header-text">Nearby? </div>
+            <input id="zip" placeholder="Zip?" ng-keypress="locationListener($event)"></input>
+        </div>
+        <div class="local-spawn col-12 col-sm-6 col-md-4 text-center">
+            <div class="block">
+                <div class="plus" ng-mousedown="newPostable()">+</div>
+                <div class="newPostable">
+                    <input spellcheck="false" id="topic" placeholder="Your new topic"></input>
+                    <div class="post" ng-mousedown="submitPostable()">Post</div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class='local-block col-12 col-sm-6 col-md-4'><div class='block'><div class='block-topic'>This is the topic of the block</div></div></div> -->
     </div>
 </div>

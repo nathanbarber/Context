@@ -1,0 +1,13 @@
+IDEAS:
+
+    Integrate Giphy API to display dull background roulette of gifs behind black transluscent screen
+
+    Add location based chat, distance remaining user selectable
+
+    Make home page animation GIF based as to display properly on mobile
+
+    Make chat persistant as long as room is open. Use Redis with redis-node-client
+
+BUGS:
+
+    

@@ -1,0 +1,179 @@
+html, body {
+    overflow-x: hidden;
+}
+body {
+    position: relative;
+    background-color: black;
+}
+
+.row {
+    overflow: hidden;
+}
+
+#com {
+    font-family: Courier New, Courier, monospace;
+}
+
+.input-bar {
+    position: fixed;
+    font-size: 2vh;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 8vh;
+    color: white;
+    background-color: black;
+    font-family: Courier New, Courier, monospace;
+    line-height: 8vh;
+}
+
+.input-box {
+    background-color: black;
+    color: white;
+    font-size: 2vw;
+    display: inline-block;
+    position: relative;
+    width: 70%;
+    float: right;
+    height: 8vh;
+    text-align: left;
+    outline: none;
+    border: hidden;
+    font-family: Courier New, Courier, monospace;
+}
+
+.active {
+    display: inline-block;
+    width: 10%;
+    height: 8vh;
+    background-color: black;
+    color: #afafaf;
+    float: right;
+    font-size: 2.4vh;
+    line-height: 8vh;
+    text-align: center;
+    font-weight: 500;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    -webkit-transition: color 300ms, background-color 300ms ease-in;
+    -moz-transition: color 300ms, background-color 300ms ease-in;
+    transition: color 300ms, background-color 300ms ease-in;
+}
+
+.active:hover {
+    color: white;
+}
+
+.top-info {
+    width: 100%;
+    height: 15vh;
+    position: relative;
+    /* position: fixed;
+    top: 0;
+    left: 0; */
+    color: white;
+    /*background: url('/img/top-info.png') center no-repeat;
+    background-size: cover;*/
+    text-align: center;
+    line-height: 15vh;
+    font-size: 5vw;
+}
+#room-count {
+    margin-left: 2vw;
+    font-family: Courier New, Courier, monospace;
+    font-size: 3.7vw;
+}
+#total-count {
+    color: red;
+    margin-left: 2vw;
+    font-family: Courier New, Courier, monospace;
+    font-size: 3.7vw;
+}
+/* #buffer {
+    height: 15vh;
+    width: 100%;
+    position: relative;
+    background-color: black;
+    z-index: 10;
+} */
+
+#count {
+    font-size: 3.7vw;
+    position: absolute;
+    top: 5vh;
+    left: 5vh;
+    color: white;
+    font-family: Courier New, Courier, monospace;
+    color: red;
+}
+
+.loader-wrapper {
+    position: absolute;
+    left: 0;
+    top: 15vh;
+    height: 60vh;
+    overflow: hidden;
+    width: 100%;
+}
+
+.loader {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+}
+
+.message-out {
+    font-size: 3vh;
+    color: white;
+    border-left: indianred .5vw solid;
+    display: block;
+    margin-top: 2vh;
+    width: 100vw;
+    font-family: Courier New, Courier, monospace;
+    padding-left: 2vw;
+    overflow: hidden;
+}
+
+.message-in {
+    font-size: 3vh;
+    color: white;
+    border-left: lightseagreen .5vw solid;
+    display: block;
+    margin-top: 2vh;
+    width: 100%;
+    font-family: Courier New, Courier, monospace;
+    padding-left: 2vw;
+}
+
+@media screen and (max-aspect-ratio: 3/4) {
+    .input-box {
+        width: 80%;
+        font-size: 5vw;
+    }
+    .active {
+        display: none;
+    }
+    .top-info {
+        height: 20vh;
+        font-size: 4vh;
+    }
+    #room-count {
+        font-size: 5vw;
+    }
+    #total-count {
+        font-size: 5vw;
+    }
+    #count {
+        font-size: 5vw;
+    }
+    .verse {
+        font-size: 5vw;
+        border-left: indianred 1.5vw solid;
+    }
+    .respond {
+        font-size: 5vw;
+        border-left: lightseagreen 1.5vw solid;
+    }
+}

@@ -1,204 +1,239 @@
 var app = angular.module("context", ["ngRoute"]);
-var room = "Connection Interrupted";
-var activerooms = [];
-var name;
-
 app.config(function($routeProvider) {
     $routeProvider
     .when('/', {
-        controller: 'home',
-        templateUrl: '/views/home.html'
+        templateUrl: 'views/home.html',
+        controller: 'home'
     })
-    .when('/live', {
-        controller: 'live',
-        templateUrl: '/views/live.html'
+    .when('/com', {
+        templateUrl: 'views/com.html',
+        controller: 'com'
     });
 });
 
-app.run(function() {
-    updateActive();
-});
+var room = '';
+var name = '';
+var socket;
+var userLocation;
 
 app.controller('home', function($scope, $location) {
-    var listen;
-    var triggered;
-    var last;
-    var stage1;
-    var stage2;
-    var complete;
-    $(".enter").mouseenter(function() {
-        if(!triggered) {
-            TweenMax.to($(this).find(".juice"), 0.2, {top: 0 + "%"});
-            TweenMax.to($(".label"), 0.2, {color: "red"});
-        }
-    }); 
-    $(".enter").mouseleave(function() {
-        if(!triggered) {
-            TweenMax.to($(this).find(".juice"), 0.2, {top: 100 + "%"});
-            TweenMax.to($(".label"), 0.2, {color: "#d3d3d3"});
-        }
-    });
-    $(".enter").mousedown(function() {
-        if(parseFloat($('.roomwrapper').css("top")) > 10) {
-            TweenLite.to(".roomwrapper", 0.2, {top: 0 + "%"});
-            TweenLite.to(".juice", 0.2, {top: -100 + "%"});
-            TweenLite.to(".label", 0.2, {top: -100 + "%"});
-            TweenLite.to('.trendPanel', 0.2, {right: 5+'vw'});
-            updateActive();
-            triggered = true;
-            stage1 = true;
-        } else {
-            if(stage1) {
-                document.getElementById("roominput").value = "";
-            }
-        }
-        if(last) {
-            document.getElementById("nameinput").value = "";
-        }
-    });
-    $('.enter').keypress(function(e) {
-        if(stage1) {
-            if(e.which == 13) {
-                nameOverlay();
-                stage1 = false;
-                stage2 = true;
-            }
-        } else if(stage2) {
-            if(e.which == 13 && document.getElementById("nameinput").value != "Pseudonym?") {
-                complete = true;
-            }
-        }
-    });
-    $('.escape-sheet').mousedown(function() {
-        if(triggered) {
-            TweenLite.to(".roomwrapper", 0.2, {top: 100 + "%"});
-            TweenLite.to(".juice", 0.2, {top: 100 + "%"});
-            TweenLite.to(".label", 0.2, {top: 0 + "%", color: "#d3d3d3"});
-            TweenLite.to(".secondjuice", 0.2, {top: 100+"%"});
-            TweenLite.to(".namewrapper", 0.2, {top: 100+"%"});
-            TweenLite.to('.trendPanel', 0.2, {right: -25 + 'vw'});
-            setTimeout(function() {
-                document.getElementById("roominput").value = "What Topic?";
-                document.getElementById("nameinput").value = "Pseudonym?";
-            }, 200);
-            triggered = false;
-            last = false;
-        }
-    });
-
-    function nameOverlay() {
-        TweenLite.to(".roomwrapper", 0.2, {top: -100 + "%"});
-        TweenLite.to(".secondjuice", 0.4, {top: -100+"%"});
-        TweenLite.to(".namewrapper", 0.2, {top: 0+"%"});
-        TweenLite.to('.trendPanel', 0.2, {right: -25 + 'vw'});
-        last = true;
+    if(socket) {
+        socket.disconnect();
+        socket = io.connect();
+    } else {
+        socket = io.connect();
     }
-
-    $scope.switch = function(e) {
-        if(e.keyCode == 13) {
-            if(complete) {
-                $location.path("/live");
-                room = document.getElementById("roominput").value;
-                room = room.toLowerCase();
-                name = (document.getElementById("nameinput").value);
-                name = name.substring(0,1).toUpperCase() + name.substring(1).toLowerCase();
-                if(name.length > 15) {
-                    name = name.substring(0, 15);
-                }
-                if(room.length > 15) {
-                    room = room.substring(0, 15);
-                }
-                createConnection(room);
-                //SWITCH PAGES
-            }
+    $(document).ready(function() {
+        if(isMobile() == false) {
+            $(".background").css({
+                position: "fixed"
+            });
+            $(".local-block, .local-spawn").addClass("padding-expand");
+            $(".post, .block").addClass("shadow-expand");
         }
-    }
-})
-
-app.controller('live', function($scope, $location) {
-    $(".field").focus();
-    document.getElementById("rname").innerHTML = room;
-    $scope.ref = function(key) {
-        if(room != "Connection Interrupted") {
-            socket.emit('disc', {data: ""});
-        }
-        $location.path('/');
-        setTimeout(function() {
-            updateActive();
-        }, 500);
-    };
-    $('.toss').mouseenter(function() {
-        TweenLite.to($(this).find(".tossjuice"), 0.2, {top: 0 + "%", ease: Power4.easeIn});
-        TweenLite.to($(this).find(".tosstext"), 0.2, {color: "white"});
-    });
-    $('.toss').mouseleave(function() {
-        TweenLite.to($(this).find(".tossjuice"), 0.2, {top: -100 + "%", ease: Power4.easeOut});
-        var t = $(this).find('.tossjuice');
-        setTimeout(function() {
-            TweenLite.set(t, {top: 100 + "%"});
-        }, 200);
-        TweenLite.to($(this).find(".tosstext"), 0.2, {color: "red"});
-    });
-    $("#toss").mousedown(function() {
-        verseit(document.getElementById("f").value, true, 'green');
-    });
-
-    $scope.keycheck = function($event) {
-        if($event.keyCode == 13) {
-            verseit(name + ":  " + document.getElementById("f").value, true, 'green');
-        }
-    };
-});
-
-app.controller('menu', function($scope) {
-    
-});
-
-function verseit(txt, sec, color) {
-    if(txt.replace(/ /g, '') != '' && txt != ''){
-        var loader = document.getElementById("l");
-        var verse = document.createElement("div");
-        if(color == "red") {
-            verse.setAttribute("class", "verse");
-        } else if(color == "green") {
-            verse.setAttribute("class", "respond");
-        }
-        verse.innerHTML = "<div style='margin-left: 2vw'>" + txt + '</div>';
-        loader.appendChild(verse);
-        setTimeout(function() {
-            $('.field').focus();
-        }, 200)
-        var off = $(verse).offset().top;
-        loader.scrollTop = loader.scrollHeight;
-        if(sec) {
-            socket.emit('chat message', txt);
-        }
-    }
-    if(color == "green") {
-        document.getElementById('f').value = '';
-    }
-}
-
-function updateActive() {
-    $.get('/activerooms', function(data) {
-        $(document).ready(function() {
-            document.getElementById('tp').innerHTML = "";
-            activerooms = [];
-            if(data.length == 0) {
-                var trend = document.createElement("div");
-                trend.setAttribute("class", "trend");
-                trend.innerHTML = "No active rooms";
-                document.getElementById('tp').appendChild(trend);
-            }
-            for(var i in data) {
-                activerooms.push(data[i]);
-            }
-            for(var i in activerooms) {
-                var trend = document.createElement("div");
-                trend.setAttribute("class", "trend");
-                trend.innerHTML = activerooms[i].room.replace('/', '') + ': ' + '<span style="font-family: Courier New, Courier, monospace;">' + activerooms[i].online + '</span>';
-                document.getElementById('tp').appendChild(trend);
-            }
+        $(".background").css({
+            background: "red url('lib/" + (Math.floor(Math.random() * 8) + 1) + ".gif') no-repeat center",
+            backgroundSize: "cover"
         });
     });
+    $scope.hover = function() {
+        if(isMobile()) {
+            $scope.initial();
+        } else {
+            if($(".label").css("top") == "0px") {
+                TweenMax.to(".slider", 0.3, {top: "0%"});
+                TweenMax.to(".label", 0.3, {color: "#dd8888"});
+            }
+        }
+    };
+    $scope.leave = function() {
+        if($(".label").css("top") == "0px") {
+            TweenMax.to(".slider", 0.3, {top: "100%"});
+            TweenMax.to(".label", 0.3, {color: "white"});
+        }
+    };
+    $scope.initial = function() {
+        TweenMax.to(".label", 0.3, {top: "-100%"});
+        TweenMax.to(".slider", 0.3, {top: "-100%", onComplete: function() {
+            TweenMax.set(".slider", {top: "100%"});
+            TweenMax.to(".slider", 0.3, {top: "-100%"});
+            TweenMax.to("#room", 0.3, {top: "0%", onComplete: function() {
+                $("#room").focus();
+            }});
+        }});
+        socket.emit("activity");
+        socket.on("activity-response", function(data) {
+            $("#activity").find(".pair").remove();
+            for(var i in data) {
+                $("#activity").append("<div class='pair'><span class='room'>" + 
+                    data[i].room + ": </span><span class='count'>" + 
+                    data[i].clients + "</span></div>");
+                TweenMax.to("#activity", 0.3, {opacity: 1, marginTop: "20px"});
+            }
+        });
+    };
+    $scope.fromRoom = function(event) {
+        if(event.keyCode == 13) {
+            if($("#room").val() != '' && $("#room").val().length < 15) {
+                $("#room").blur();
+                $scope.room = $("#room").val().toUpperCase();
+                room = $scope.room;
+                TweenMax.to("#room", 0.3, {top: "-100%"});
+                TweenMax.to(".slider", 0.3, {top: "-100%", onComplete: function() {
+                    TweenMax.set(".slider", {top: "100%"});
+                    TweenMax.to("#name", 0.3, {top: 0, onComplete: function() {
+                        $("#name").focus();
+                    }});
+                }});
+                TweenMax.to("#activity", 0.3, {opacity: 0, marginTop: "120px"});
+            } else {
+                TweenLite.to("#button", 0.15, {borderColor: "red", onComplete: function() {
+                    TweenLite.to("#button", 0.15, {borderColor: "white"});
+                }});
+                $("#room").val("");
+            }
+        }
+    };
+    $scope.fromName = function(event) {
+        if(event.keyCode == 13) {
+            if($("#name").val() != '') {
+                $scope.name = $("#name").val();
+                name = $scope.name;
+                $location.path("/com");
+            }
+        }
+    };
+    $scope.revertButton = function() {
+        TweenMax.to("#button input", 0.3, {top: "100%", onComplete: function() {
+            TweenMax.to(".slider", 0.3, {top: "100%"});
+            TweenMax.to(".label", 0.3, {top: 0, color: "white"});
+            $("#button input").val('');
+        }});
+        TweenMax.to("#activity", 0.3, {opacity: 0, marginTop: "120px"});
+    };
+    $scope.locationListener = function(event) {
+        if(event.keyCode == 13) {
+            var zip = $("#zip").val();
+            if(/[0-9]/g.test(zip) == true && zip.length == 5) {
+                userLocation = zip;
+                $("#header-text").text("Nearby");
+                $("#zip").css("display", "none");
+                $(".local-spawn").css("display", "initial");
+                socket.emit("get-posts", userLocation);
+                socket.on("local-posts", function(data) {
+                    console.log(data);
+                    $(".local-block").remove();
+                    for(var i in data) {
+                        $(".local-topics").append("<div class='local-block col-12 col-sm-6 col-md-4'><div class='block'><div class='block-topic'>" + data[i].replace(/\d/g, '').replace(/\-/g, ' ') + "</div></div></div>");
+                    }
+                });
+            } else {
+                $("#zip").val("");
+            }
+        }
+    };
+    $scope.newPostable = function() {
+        TweenLite.to(".plus", 0.3, {opacity: 0, onComplete: function() {
+            TweenLite.set(".plus", {display: "none"});
+            TweenLite.to(".newPostable", 0.3, {top: 0});
+        }});
+        $(window).click(function() {
+            TweenLite.set(".plus", {display: "initial"});
+            TweenLite.to(".newPostable", 0.3, {top: "100%", onComplete: function() {
+                TweenLite.to(".plus", 0.3, {opacity: 1});
+            }}); 
+            $(".newPostable").find("input").val("");
+        });
+        $('.local-spawn').click(function(event) {
+            event.stopPropagation();
+        });
+    };  
+    $scope.submitPostable = function() {
+        var postable = {
+            name: $(".newPostable").find("#topic").val(),
+            location: userLocation
+        };
+        if(postable.name.length > 3 && postable.name.replace(" ", '').length > 3) {
+            socket.emit("create-postable", postable);
+            socket.emit("get-posts", userLocation);
+        } else {
+            alert("Revise your posting");
+        }
+    };
+});
+
+app.controller('com', function($scope, $location) {
+    if(room == '' || name == '') {
+        if(socket) {
+            socket.disconnect();
+        }
+        $location.path("/");
+    }
+    $(document).ready(function() {
+        $(".input-box").focus();
+    });
+    if(socket == undefined) {
+        socket = io.connect();
+    }
+    socket.emit("choose-room", room);
+    socket.on("query-count-update", function() {
+        socket.emit("fetch-count-update", room);
+    });
+    socket.on("room-log", function(data) {
+        if(data) {
+            for(var i in data) {
+                if(data[i].split(":")[0] == name) {
+                    $('#loader').append("<div class='message-out'> " + data[i] + "</div>");
+                } else {
+                    $('#loader').append("<div class='message-in'> " + data[i] + "</div>");
+                }
+            }
+            top();
+        } else {
+
+        }
+    });
+    socket.on("updated-count", function(data) {
+        $('#room-name').text(room);
+        $('#room-count').text(data.inRoom);
+        $('#total-count').text(data.total);
+    });
+    socket.on("message-in", function(data) {
+        $('.loader').append("<div class='message-in'> " + data.name + ": " + data.message + "</div>");
+        top();
+    });
+    function top() {
+        var loader = document.getElementById("loader");
+        loader.scrollTop = loader.scrollHeight;
+    }
+    function send() {
+        var messageBody = $(".input-box").val();
+        if(messageBody.length > 0) {
+            socket.emit("message", {name: name, room: room, message: messageBody});
+            $('.loader').append("<div class='message-out'> " + name + ": " + messageBody + "</div>");
+        }
+        $(".input-box").val('');
+        top();
+        $(".input-box").focus();        
+    }
+    $scope.sendButton = function() {
+        send();
+    };
+    $scope.sendListener = function(event) {
+        if(event.keyCode == 13) {
+            send();
+        }
+    };
+    $scope.leave = function() {
+        $location.path("/");
+    };
+});
+
+// Standard Functions
+
+function isMobile() {
+    if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+        return true;
+    }
+    return false;
 }

@@ -1,0 +1,20 @@
+<link rel="stylesheet" type="text/css" href="/views/com.css"></link>
+<div class="container-fluid" id="com" style="position: relative; height: 100vh; width: 100vw">
+    <div class="row">
+        <div id="top-info" class="top-info"><span id="room-name">room-name</span><span id="room-count">room-count</span><span id="total-count">total-count</span></div>
+        <div id="buffer"></div>
+        <div id="count"></div>
+        <div class="loader-wrapper"><div id="loader" class="loader"></div></div>
+
+        <div class="input-bar">
+            &nbsp&nbsp>&nbsp&nbsp
+            <div class="active" ng-mousedown="leave()">
+                leave
+            </div>
+            <div class="active" ng-mousedown="sendButton()">
+                send
+            </div>
+            <input id="input-box" class="input-box" placeholder="Type message here" ng-keypress="sendListener($event)"></input>
+        </div>
+    </div>
+</div>
